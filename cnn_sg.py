@@ -13,7 +13,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  #  {'0', '1', '2', '3'} = {Show all messages, remove info, remove info and warnings, remove all messages}
 import tensorflow as tf
 from tensorflow import keras
-from keras import models, layers
+from keras import models, layers, optimizers
 from sklearn import datasets, model_selection, metrics
 from knn_sg import cross_validation
 from PIL import Image
@@ -29,7 +29,7 @@ from PIL import Image
 def main():
 
     # Decide on which datasets to run
-    number8x8, numbers28x28, cifar10  = False, False, False
+    number8x8, numbers28x28, cifar10  = False, False, True
 
     #PART 1: Build and predict labels for 8x8 grescale images of numbers from 0-9
     if number8x8:
@@ -187,31 +187,35 @@ def main():
 
         model = models.Sequential()
 
-        model.add(layers.Conv2D(64,(4,4), activation = 'relu', input_shape = (32,32,3)))
+        model.add(layers.Conv2D(128,(3,3), activation = 'relu', input_shape = (32,32,3)))
         model.add(layers.MaxPool2D(2,2))
 
         model.add(layers.Conv2D(64,(3,3), activation = 'relu'))
         model.add(layers.MaxPool2D(2,2))
 
-        model.add(layers.Conv2D(64,(3,3), activation = 'relu'))
+        model.add(layers.Conv2D(32,(3,3), activation = 'relu'))
         model.add(layers.MaxPool2D(2,2))
+
 
         model.add(layers.Flatten())
 
-        model.add(layers.Dense(64, activation = 'relu'))
+        model.add(layers.Dense(32, activation = 'relu'))
         model.add(layers.Dense(10))
 
         model.summary()
 
         #Compile
-        model.compile(optimizer='adam', 
+        optimizer_primary = 'adam'
+        optimizer_alternative = optimizers.RMSprop()
+        model.compile(optimizer=optimizer_primary, 
                 loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                 metrics=['acc'])
-
+        # optimizer   optimizer=keras.optimizers.RMSprop()
 
         #Train
-        history = model.fit(data_train,labels_train, epochs = 4, verbose = 1, validation_data=(data_test,labels_test))
-        
+        history = model.fit(data_train,labels_train, epochs = 15, verbose = 1, batch_size = 32, \
+                         validation_data=(data_test,labels_test))
+        # batch size 64
         if 0:
             #Save
             model.save(cnn_mnist_path)
