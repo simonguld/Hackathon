@@ -7,7 +7,6 @@ cnn_mnist_path = 'C:\\Users\\Simon\\PycharmProjects\\Projects\\Projects\\Hackath
 ## Imports:
 import numpy as np
 import matplotlib.pyplot as plt
-import importlib
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  #  {'0', '1', '2', '3'} = {Show all messages, remove info, remove info and warnings, remove all messages}
@@ -185,21 +184,37 @@ def main():
 
         ## Building and traning model
 
+        ## lege med: 
+        # Max-pool vs conv2d inden connected layer
+        # optimizer & loss function
+        # 3D conv og maxpool lag
+        # global max pool
+        # batch size
+        # trying on a softmax activation for class neurons
+        # fine tuning with random search
+        # including regularization
+        # including dropout layers
+        # Stacking conv2d layers
+
         model = models.Sequential()
 
-        model.add(layers.Conv2D(128,(3,3), activation = 'relu', input_shape = (32,32,3)))
+        model.add(layers.Conv2D(64,(4,4), activation = 'relu', input_shape = (32,32,3)))
         model.add(layers.MaxPool2D(2,2))
 
         model.add(layers.Conv2D(64,(3,3), activation = 'relu'))
         model.add(layers.MaxPool2D(2,2))
 
-        model.add(layers.Conv2D(32,(3,3), activation = 'relu'))
+        model.add(layers.Conv2D(96,(3,3), activation = 'relu'))
         model.add(layers.MaxPool2D(2,2))
+
+       # model.add(layers.Conv2D(128,(2,2), activation = 'relu'))
+        #model.add(layers.Conv2D(16,(3,3), activation = 'relu'))
+        #model.add(layers.MaxPool2D(2,2))
 
 
         model.add(layers.Flatten())
 
-        model.add(layers.Dense(32, activation = 'relu'))
+        model.add(layers.Dense(64, activation = 'relu'))
         model.add(layers.Dense(10))
 
         model.summary()
