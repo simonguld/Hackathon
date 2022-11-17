@@ -262,7 +262,6 @@ def main():
                 runtime_information=False), test_fraction = 0.2)
             print("f1 scores for each roll: ", f1_scores, "  Average f1 scores: ", np.average(f1_scores))
 
-
     ## PART 3: Get Gaussian Naive Bayes up and running
     if naive_bayes:
         # Try Naive Bayes on x_train data set
@@ -277,7 +276,6 @@ def main():
         gnb_restricted = lambda data, data_labels, test: gaussian_naive_bayes(data, data_labels, test)[0]
         nv_f1 = cross_validation(x_train, train_labels, gnb_restricted, test_fraction = 0.2, f1_score_average = 'binary')
         print("Gaussian Naive Bayes on test data set: f1 score for each roll: ", nv_f1, "\nAverage f1 score: ", np.average(nv_f1))
-
 
     ## PART 4: Try out infrastructure for different scikit datasets
     if try_new_data:

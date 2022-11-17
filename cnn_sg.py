@@ -7,10 +7,11 @@ cnn_mnist_path = 'C:\\Users\\Simon\\PycharmProjects\\Projects\\Projects\\Hackath
 ## Imports:
 import numpy as np
 import matplotlib.pyplot as plt
-
 import os
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  #  {'0', '1', '2', '3'} = {Show all messages, remove info, remove info and warnings, remove all messages}
 import tensorflow as tf
+
 from tensorflow import keras
 from keras import models, layers, optimizers
 from sklearn import datasets, model_selection, metrics
@@ -28,7 +29,7 @@ from PIL import Image
 def main():
 
     # Decide on which datasets to run
-    number8x8, numbers28x28, cifar10  = False, False, True
+    number8x8, numbers28x28, cifar10  = False, True, False
 
     #PART 1: Build and predict labels for 8x8 grescale images of numbers from 0-9
     if number8x8:
@@ -112,7 +113,7 @@ def main():
         samples, pixel_shape[0], pixel_shape[1] = data_train.shape
 
 
-        build_and_train, load_model = False, True
+        build_and_train, load_model = True, False
 
         ## Build and train
         if build_and_train:
@@ -173,10 +174,10 @@ def main():
         train_samples, pixel_shape[0], pixel_shape[1], pixel_shape[2] = data_train.shape
 
         # Ensure that all data has been loaded correctly
-        assert data_train.shape == (50000, 32, 32,3)
-        assert data_test.shape == (10000, 32, 32,3)
-        assert labels_train.shape == (50000,1)
-        assert labels_test.shape == (10000,1)
+        assert data_train.shape == (50000, 32, 32, 3)
+        assert data_test.shape == (10000, 32, 32, 3)
+        assert labels_train.shape == (50000, 1)
+        assert labels_test.shape == (10000, 1)
 
         # Normalize
         data_train = data_train / 255
@@ -185,6 +186,9 @@ def main():
         ## Building and traning model
 
         ## lege med: 
+        # preprocessing --> udvide træningssæt med rotationer, zoom ins, brightness adj.,
+        # --> OBS: keras.layers har nogle funktioner.
+        # forskyde data så av = 0
         # Max-pool vs conv2d inden connected layer
         # optimizer & loss function
         # 3D conv og maxpool lag
@@ -192,9 +196,11 @@ def main():
         # batch size
         # trying on a softmax activation for class neurons
         # fine tuning with random search
-        # including regularization
+        # including regularization l2. regulariser indtil minimering af validation loss
         # including dropout layers
         # Stacking conv2d layers
+        # batch normalization
+        # tilføje koefficienter indtil grænen for overfitting nås. [minier validation loss]
 
         model = models.Sequential()
 
@@ -211,11 +217,10 @@ def main():
         #model.add(layers.Conv2D(16,(3,3), activation = 'relu'))
         #model.add(layers.MaxPool2D(2,2))
 
-
         model.add(layers.Flatten())
 
         model.add(layers.Dense(64, activation = 'relu'))
-        model.add(layers.Dense(10))
+        model.add(layers.Dense(10), activation = 'softmax')
 
         model.summary()
 
